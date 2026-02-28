@@ -6,3 +6,5 @@
 *.str
 *.log
 *.xpr
+*.wpc
+*.lpr
