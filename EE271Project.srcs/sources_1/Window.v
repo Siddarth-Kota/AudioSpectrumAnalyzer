@@ -5,7 +5,7 @@ module Window (
     input wire clk,
     input wire rst,
 
-    input wire [23:0] audio_data,
+    input wire signed [23:0] audio_data,
     input wire data_valid,
     
     //Output to Buffer Block
