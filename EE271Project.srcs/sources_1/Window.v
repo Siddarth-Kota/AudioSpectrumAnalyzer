@@ -9,7 +9,7 @@ module Window (
     input wire data_valid,
     
     //Output to Buffer Block
-    output reg [31:0] windowed_data,
+    output reg [15:0] windowed_data,
     output reg window_valid
     );
 
