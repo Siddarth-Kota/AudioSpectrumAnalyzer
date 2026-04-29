@@ -1,10 +1,14 @@
 module PowerToDb (
     input  wire [26:0] mag,  // from ComplexToPower, unscaled 1024-pt FFT
+    input  wire mag_valid,
     output reg  [6:0]  db,
-    input  wire        clk
+    output reg valid,
+    input  wire clk,
+    input wire reset
 );
  
 reg [6:0] msb_pos;
+reg msb_valid;
  
 always @(posedge clk) begin
     casez (mag)
@@ -40,7 +44,14 @@ always @(posedge clk) begin
 end
  
 always @(posedge clk) begin
-    db <= (msb_pos << 1) + msb_pos; // db = 3 * msb_pos roughly
+    db <= (msb_pos << 1) + msb_pos; // db = 3 * msb_pos roughly i can find algorithm to do better if needed just this is fast and only has 3dB max error 
 end
+
+always @(posedge clk) begin
+    begin
+        msb_valid <= mag_valid; // Pass through the valid signal 
+        valid <= msb_valid; // Pass through the valid signal 
+    end
+end 
  
 endmodule
