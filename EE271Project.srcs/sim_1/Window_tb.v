@@ -28,12 +28,12 @@ module tb_Window;
     always #5 clk = ~clk;
     integer i;
 
+    //data production
     initial begin
         clk = 0;
         rst = 1;
         audio_data_in = 24'd0;
         s_valid = 0;
-        m_ready = 1;
 
         #100;
         rst = 0;
@@ -45,8 +45,11 @@ module tb_Window;
         for (i = 0; i < 1024; i = i + 1) begin
             audio_data_in = 24'd1000000; 
             s_valid = 1'b1;
+
+            while (!(s_valid && s_ready)) begin
+                @(posedge clk);
+            end
             
-            wait(s_valid && s_ready);
             @(posedge clk);
             
             s_valid = 1'b0;
@@ -59,10 +62,28 @@ module tb_Window;
         $finish;
     end
 
-    // Monitor AXI-Stream outputs
+    //downstream stall simulation
+    integer received_count = 0;
+    
+    initial begin
+        m_ready = 1;
+        
+        wait(received_count == 512);
+        
+        $display("downstream stall start");
+        m_ready = 0;
+        
+        repeat(1000) @(posedge clk);
+        
+        $display("downstream stall end");
+        m_ready = 1;
+    end
+
     always @(posedge clk) begin
         if (m_valid && m_ready) begin
             $display("Sample Output: %d", windowed_data_out);
+            received_count = received_count + 1;
         end
     end
+
 endmodule
