@@ -73,7 +73,7 @@ module cic #(parameter N = 4,   // not used, but for completion, number of stage
             raw_pcm <= 0;
             data_valid <= 0;
         end
-        else if(sample_en) begin 
+        else if(sample_en && (comb3 != 0)) begin // wait for valid data
             comb0 <= integrator3 - integrator3_d;
             integrator3_d <= integrator3;
 
@@ -88,6 +88,19 @@ module cic #(parameter N = 4,   // not used, but for completion, number of stage
 
             raw_pcm <= comb3[WIDTH-1:0];
             data_valid <= 1;
+        end
+        else if(sample_en) begin 
+            comb0 <= integrator3 - integrator3_d;
+            integrator3_d <= integrator3;
+
+            comb1 <= comb0 - comb0_d;
+            comb0_d <= comb0;
+
+            comb2 <= comb1 - comb1_d;
+            comb1_d <= comb1;
+
+            comb3 <= comb2 - comb2_d;
+            comb2_d <= comb2;
         end
         else begin 
             data_valid <= 0;

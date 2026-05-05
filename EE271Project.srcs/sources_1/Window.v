@@ -5,7 +5,7 @@ module Window #(
     parameter LOG2_FFT = 10
     )(
     input  wire clk,
-    input  wire rst_n, // Active low reset
+    input  wire rst, // Active high reset -Karlo
     
     // From I2S Receiver
     input  wire signed [23:0] audio_data_in,
@@ -30,12 +30,13 @@ module Window #(
     
     reg signed [39:0] result;
 
-    always @(posedge clk) begin
-        if (!rst_n) begin
+    always @(posedge clk, posedge rst) begin      // made asynchronous so reset will actually trigger these before clock begins
+        if (rst) begin
             sample_idx <= 0;
             data_valid_out <= 0;
             pipe_valid_1 <= 0;
             pipe_valid_2 <= 0;
+            pipe_coeff <= 0;            // added reset state -Karlo
         end else begin
             pipe_valid_1 <= data_valid_in;
             if (data_valid_in) begin
