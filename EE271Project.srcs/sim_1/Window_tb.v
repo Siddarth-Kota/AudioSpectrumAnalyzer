@@ -2,21 +2,27 @@
 
 module tb_Window;
     reg clk;
-    reg rst_n;
-    reg signed [23:0] audio_data_in;
-    reg data_valid_in;
+    reg rst;
     
+    // AXI-Stream Inputs to DUT
+    reg signed [23:0] audio_data_in;
+    reg s_valid;
+    wire s_ready;
+    
+    // AXI-Stream Outputs from DUT
     wire signed [15:0] windowed_data_out;
-    wire data_valid_out;
+    wire m_valid;
+    reg m_ready;
 
     Window dut (
         .clk(clk),
-        .rst_n(rst_n),
+        .rst(rst),
         .audio_data_in(audio_data_in),
-        .data_valid_in(data_valid_in),
-
+        .s_valid(s_valid),
+        .s_ready(s_ready),
         .windowed_data_out(windowed_data_out),
-        .data_valid_out(data_valid_out)
+        .m_valid(m_valid),
+        .m_ready(m_ready)
     );
 
     always #5 clk = ~clk;
@@ -24,33 +30,38 @@ module tb_Window;
 
     initial begin
         clk = 0;
-        rst_n = 0;
+        rst = 1;
         audio_data_in = 24'd0;
-        data_valid_in = 0;
+        s_valid = 0;
+        m_ready = 1;
 
         #100;
-        rst_n = 1;
+        rst = 0;
 
         repeat(5) @(posedge clk);
 
-        $display("Starting Window Module Testbench");
+        $display("Starting Window Module Testbench (AXI-Stream)");
+        
         for (i = 0; i < 1024; i = i + 1) begin
-            audio_data_in <= 24'd1000000; 
-            data_valid_in <= 1'b1;
+            audio_data_in = 24'd1000000; 
+            s_valid = 1'b1;
             
+            wait(s_valid && s_ready);
             @(posedge clk);
-            data_valid_in <= 1'b0;
+            
+            s_valid = 1'b0;
             repeat(10) @(posedge clk);
         end
 
-        repeat(10) @(posedge clk);
+        repeat(20) @(posedge clk);
 
         $display("Test finished.");
         $finish;
     end
 
+    // Monitor AXI-Stream outputs
     always @(posedge clk) begin
-        if (data_valid_out) begin
+        if (m_valid && m_ready) begin
             $display("Sample Output: %d", windowed_data_out);
         end
     end
