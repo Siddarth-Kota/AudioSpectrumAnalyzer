@@ -132,26 +132,33 @@ module top(
     );
     assign fft_mready = 1'b1;
 
-    wire [26:0] mag;
-    wire cp_mvalid;
+    wire [26:0] cp_tdata;
+    wire        cp_tvalid;
+    wire        cp_tready;
+
     ComplexToPower cp(
-        .fft_tdata(fft_mdata),
-        .fft_tvalid(fft_mvalid),
-        .mag(mag),
-        .mag_valid(cp_mvalid),
-        .clk(M_CLK),
-        .reset(RESET)
+        .s_axis_tdata  (fft_mdata),     
+        .s_axis_tvalid (fft_mvalid),
+        .s_axis_tready (fft_mready),    
+        .m_axis_tdata  (cp_tdata),      
+        .m_axis_tvalid (cp_tvalid),
+        .m_axis_tready (cp_tready),
+        .clk           (M_CLK),
+        .reset         (RESET)
     );
 
     wire [6:0] db;
-    wire pd_mvalid;
+    wire       pd_mvalid;
+
     PowerToDb pd(
-        .mag(mag),
-        .mag_valid(cp_mvalid),
-        .db(db),
-        .valid(pd_mvalid),
-        .clk(M_CLK),
-        .reset(RESET)
+        .s_axis_tdata  (cp_tdata),     
+        .s_axis_tvalid (cp_tvalid),
+        .s_axis_tready (cp_tready),      e
+        .m_axis_tdata  (db),              
+        .m_axis_tvalid (pd_mvalid),
+        .m_axis_tready (1'b1),           
+        .clk           (M_CLK),
+        .reset         (RESET)
     );
 
     vga_display vd(
