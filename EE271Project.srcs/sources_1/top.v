@@ -4,7 +4,13 @@ module top(
 
     output wire M_CLK,
     input wire M_DATA,      // input from ADMP
-    output wire M_LRSEL
+    output wire M_LRSEL,
+
+    output wire [3:0] vgaRed,
+    output wire [3:0] vgaGreen,
+    output wire [3:0] vgaBlue,
+    output wire Hsync,
+    output wire Vsync
 );
 
     // Clock Buffer
@@ -105,6 +111,60 @@ module top(
         .m_axis_tready(fifo_mready),
         .m_axis_tdata(fifo_data_out),
         .m_axis_tlast(fifo_mlast)
+    );
+    wire [15:0] fft_config_data = 16'b0000010101010101;     // some constant
+    wire [63:0] fft_mdata;
+    wire        fft_mvalid, fft_mready, fft_mlast;
+    xfft_0 fft(
+        .aclk(M_CLK),
+        .aresetn(!RESETN),
+        .s_axis_config_tdata(fft_config_data),
+        .s_axis_config_tvalid(1'b1),
+        .s_axis_config_tready(),
+        .s_axis_data_tdata(fifo_data_out),
+        .s_axis_data_tvalid(fifo_mvalid),
+        .s_axis_data_tready(fifo_mready),
+        .s_axis_data_tlast(fifo_mlast),
+        .m_axis_data_tdata(fft_mdata),
+        .m_axis_data_tvalid(fft_mvalid),
+        .m_axis_data_tready(fft_mready),
+        .m_axis_data_tlast(fft_mlast)
+    );
+    assign fft_mready = 1'b1;
+
+    wire [26:0] mag;
+    wire cp_mvalid;
+    ComplexToPower cp(
+        .fft_tdata(fft_mdata),
+        .fft_tvalid(fft_mvalid),
+        .mag(mag),
+        .mag_valid(cp_mvalid),
+        .clk(M_CLK),
+        .reset(RESET)
+    );
+
+    wire [6:0] db;
+    wire pd_mvalid;
+    PowerToDb pd(
+        .mag(mag),
+        .mag_valid(cp_mvalid),
+        .db(db),
+        .valid(pd_mvalid),
+        .clk(M_CLK),
+        .reset(RESET)
+    );
+
+    vga_display vd(
+        .sys_clk(clk_vga),
+        .reset(RESET),
+        .btn_r(),
+        .valid(pd_mvalid),
+        .db(db),
+        .Hsync(Hsync),
+        .Vsync(Vsync),
+        .vgaRed(vgaRed),
+        .vgaGreen(vgaGreen),
+        .vgaBlue(vgaBlue)
     );
     
     

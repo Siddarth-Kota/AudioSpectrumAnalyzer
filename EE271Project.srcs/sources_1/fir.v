@@ -15,7 +15,7 @@ module fir#(
 );
     reg signed [15:0] coeffs [TAPS-1:0];
     initial begin 
-        $readmemh("coeffs.txt", coeffs);
+        $readmemh("coeffs.hex", coeffs);
     end
 
     reg [1:0] curr_state, next_state;
