@@ -5,17 +5,15 @@ module Window #(
     parameter LOG2_FFT = 10
     )(
     input  wire clk,
-    input  wire rst, // Active high reset
+    input  wire rst_n, // Active low reset
     
-    // AXI-Stream Input (From Mic)
+    // From I2S Receiver
     input  wire signed [23:0] audio_data_in,
-    input  wire s_valid,
-    output wire s_ready,
+    input  wire data_valid_in,
     
-    // AXI-Stream Output (To Buffer/FFT)
+    // To Buffer/FFT
     output reg signed  [15:0] windowed_data_out,
-    output reg m_valid,
-    input  wire m_ready
+    output reg data_valid_out
     );
 
     reg [LOG2_FFT-1:0] sample_idx;
@@ -32,36 +30,29 @@ module Window #(
     
     reg signed [39:0] result;
 
-    assign s_ready = m_ready || !m_valid;
-
-    always @(posedge clk or posedge rst) begin 
-        if (rst) begin
+    always @(posedge clk) begin
+        if (!rst_n) begin
             sample_idx <= 0;
-            m_valid <= 0;
+            data_valid_out <= 0;
             pipe_valid_1 <= 0;
             pipe_valid_2 <= 0;
-            pipe_coeff <= 0; 
-            windowed_data_out <= 0;
         end else begin
-            if (m_ready || !m_valid) begin
+            pipe_valid_1 <= data_valid_in;
+            if (data_valid_in) begin
+                pipe_audio <= audio_data_in;
+                pipe_coeff <= window_rom[sample_idx]; //window coefficient for current sample index
                 
-                if (s_valid && s_ready) begin
-                    pipe_audio <= audio_data_in;
-                    pipe_coeff <= window_rom[sample_idx]; 
-                    sample_idx <= (sample_idx == FFT_SIZE - 1) ? 0 : sample_idx + 1;
-                end
-                
-                pipe_valid_1 <= (s_valid && s_ready);
-                if (pipe_valid_1) begin
-                    result <= pipe_audio * pipe_coeff; 
-                end
+                sample_idx <= (sample_idx == FFT_SIZE - 1) ? 0 : sample_idx + 1; //Wrap to 0 after maxing for FFT_SIZE
+            end
 
-                pipe_valid_2 <= pipe_valid_1;
-                if (pipe_valid_2) begin
-                    windowed_data_out <= result[38:23]; //isolating significant bits and discarding the rest (keep 16 bits)
-                end
+            pipe_valid_2 <= pipe_valid_1;
+            if (pipe_valid_1) begin
+                result <= pipe_audio * pipe_coeff; 
+            end
 
-                m_valid <= pipe_valid_2;
+            data_valid_out <= pipe_valid_2;
+            if (pipe_valid_2) begin
+                windowed_data_out <= result[38:23]; //isolating significant bits for output (16 out of 40 bits)
             end
         end
     end

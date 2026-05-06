@@ -3,7 +3,7 @@
 module I2S_Receiver (
     //Global signals
     input wire clk,
-    input wire rst, //Active low reset
+    input wire rst_n, //Active low reset
 
     // I2S signals
     input wire sd,
@@ -21,7 +21,7 @@ module I2S_Receiver (
     reg [23:0] shift_reg;
 
     always @(posedge clk) begin
-        if(rst) begin
+        if(!rst_n) begin
             clk_div <= 5'b0;
             bclk <= 1'b0;
             ws <= 1'b0;

@@ -2,88 +2,56 @@
 
 module tb_Window;
     reg clk;
-    reg rst;
-    
-    // AXI-Stream Inputs to DUT
+    reg rst_n;
     reg signed [23:0] audio_data_in;
-    reg s_valid;
-    wire s_ready;
+    reg data_valid_in;
     
-    // AXI-Stream Outputs from DUT
     wire signed [15:0] windowed_data_out;
-    wire m_valid;
-    reg m_ready;
+    wire data_valid_out;
 
     Window dut (
         .clk(clk),
-        .rst(rst),
+        .rst_n(rst_n),
         .audio_data_in(audio_data_in),
-        .s_valid(s_valid),
-        .s_ready(s_ready),
+        .data_valid_in(data_valid_in),
+
         .windowed_data_out(windowed_data_out),
-        .m_valid(m_valid),
-        .m_ready(m_ready)
+        .data_valid_out(data_valid_out)
     );
 
     always #5 clk = ~clk;
     integer i;
 
-    //data production
     initial begin
         clk = 0;
-        rst = 1;
+        rst_n = 0;
         audio_data_in = 24'd0;
-        s_valid = 0;
+        data_valid_in = 0;
 
         #100;
-        rst = 0;
+        rst_n = 1;
 
         repeat(5) @(posedge clk);
 
-        $display("Starting Window Module Testbench (AXI-Stream)");
-        
+        $display("Starting Window Module Testbench");
         for (i = 0; i < 1024; i = i + 1) begin
-            audio_data_in = 24'd1000000; 
-            s_valid = 1'b1;
-
-            while (!(s_valid && s_ready)) begin
-                @(posedge clk);
-            end
+            audio_data_in <= 24'd1000000; 
+            data_valid_in <= 1'b1;
             
             @(posedge clk);
-            
-            s_valid = 1'b0;
+            data_valid_in <= 1'b0;
             repeat(10) @(posedge clk);
         end
 
-        repeat(20) @(posedge clk);
+        repeat(10) @(posedge clk);
 
         $display("Test finished.");
         $finish;
     end
 
-    //downstream stall simulation
-    integer received_count = 0;
-    
-    initial begin
-        m_ready = 1;
-        
-        wait(received_count == 512);
-        
-        $display("downstream stall start");
-        m_ready = 0;
-        
-        repeat(1000) @(posedge clk);
-        
-        $display("downstream stall end");
-        m_ready = 1;
-    end
-
     always @(posedge clk) begin
-        if (m_valid && m_ready) begin
+        if (data_valid_out) begin
             $display("Sample Output: %d", windowed_data_out);
-            received_count = received_count + 1;
         end
     end
-
 endmodule
