@@ -145,10 +145,10 @@ module top(
         .m_axis_data_tready(c2p_sready),
         .m_axis_data_tlast(fft_mlast)
     );
-    // LINE OF COMPLETION
+    
     wire [26:0] c2p_mdata;
     wire c2p_mvalid, p2d_sready;
-    assign p2d_sready = 1;              // REMOVE WHEN P2D IS IN
+    assign p2d_sready = 1;              // Should always be ready I think
     ComplexToPower c2p(
         .s_axis_tdata(fft_mdata),
         .s_axis_tvalid(fft_mvalid),
@@ -158,6 +158,31 @@ module top(
         .m_axis_tready(p2d_sready),
         .clk(clk_vga),
         .reset(RESET)
+    );
+
+    // LINE OF COMPLETION
+    wire [6:0] db;
+    wire p2d_mvalid;
+    PowerToDb p2d(
+        .mag(c2p_mdata),
+        .mag_valid(c2p_mvalid),
+        .db(db),
+        .valid(p2d_mvalid),
+        .clk(clk_vga),
+        .reset(RESET)
+    );
+
+    vga_display vd(
+        .sys_clk(clk_vga),
+        .reset(RESET),
+        .btn_r(),
+        .valid(p2d_mvalid),
+        .db(db),
+        .Hsync(Hsync),
+        .Vsync(Vsync),
+        .vgaRed(vgaRed),
+        .vgaGreen(vgaGreen),
+        .vgaBlue(vgaBlue)
     );
     
 
