@@ -1,0 +1,467 @@
+#-----------------------------------------------------------
+# Vivado v2025.1 (64-bit)
+# SW Build 6140274 on Thu May 22 00:12:29 MDT 2025
+# IP Build 6138677 on Thu May 22 03:10:11 MDT 2025
+# SharedData Build 6139179 on Tue May 20 17:58:58 MDT 2025
+# Start of session at: Tue May  5 22:54:47 2026
+# Process ID         : 16576
+# Current directory  : C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/vivado/spec.runs/synth_1
+# Command line       : vivado.exe -log top.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source top.tcl
+# Log file           : C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/vivado/spec.runs/synth_1/top.vds
+# Journal file       : C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/vivado/spec.runs/synth_1\vivado.jou
+# Running On         : pepe
+# Platform           : Windows Server 2016 or Windows 10
+# Operating System   : 26200
+# Processor Detail   : 13th Gen Intel(R) Core(TM) i9-13900HX
+# CPU Frequency      : 2419 MHz
+# CPU Physical cores : 24
+# CPU Logical cores  : 32
+# Host memory        : 34086 MB
+# Swap memory        : 2147 MB
+# Total Virtual      : 36234 MB
+# Available Virtual  : 13413 MB
+#-----------------------------------------------------------
+source top.tcl -notrace
+create_project: Time (s): cpu = 00:00:12 ; elapsed = 00:00:09 . Memory (MB): peak = 602.035 ; gain = 209.230
+Command: read_checkpoint -auto_incremental -incremental {C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/vivado/spec.srcs/utils_1/imports/synth_1/top.dcp}
+INFO: [Vivado 12-5825] Read reference checkpoint from C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/vivado/spec.srcs/utils_1/imports/synth_1/top.dcp for incremental synthesis
+INFO: [Vivado 12-7989] Please ensure there are no constraint changes
+Command: synth_design -top top -part xc7a100tcsg324-1
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a100t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a100t'
+INFO: [Device 21-403] Loading part xc7a100tcsg324-1
+INFO: [Designutils 20-5440] No compile time benefit to using incremental synthesis; A full resynthesis will be run
+INFO: [Designutils 20-4379] Flow is switching to default flow due to incremental criteria not met. If you would like to alter this behaviour and have the flow terminate instead, please set the following parameter config_implementation {autoIncr.Synth.RejectBehavior Terminate}
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 36576
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 1314.344 ; gain = 494.715
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'top' [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/top.v:1]
+INFO: [Synth 8-6157] synthesizing module 'BUFG' [C:/Xilinx/2025.1/Vivado/scripts/rt/data/unisim_comp.v:2678]
+INFO: [Synth 8-6155] done synthesizing module 'BUFG' (0#1) [C:/Xilinx/2025.1/Vivado/scripts/rt/data/unisim_comp.v:2678]
+INFO: [Synth 8-6157] synthesizing module 'clk_wiz_0' [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/vivado/spec.runs/synth_1/.Xil/Vivado-16576-pepe/realtime/clk_wiz_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'clk_wiz_0' (0#1) [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/vivado/spec.runs/synth_1/.Xil/Vivado-16576-pepe/realtime/clk_wiz_0_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'mic' [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/mic.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'mic' (0#1) [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/mic.v:1]
+WARNING: [Synth 8-7071] port 'valid' of module 'mic' is unconnected for instance 'm' [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/top.v:53]
+WARNING: [Synth 8-7023] instance 'm' of module 'mic' has 5 connections declared, but only 4 given [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/top.v:53]
+INFO: [Synth 8-6157] synthesizing module 'cic' [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/cic.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'cic' (0#1) [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/cic.v:1]
+INFO: [Synth 8-6157] synthesizing module 'fir' [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/fir.v:1]
+INFO: [Synth 8-3876] $readmem data file 'coeffs.hex' is read successfully [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/fir.v:18]
+INFO: [Synth 8-6155] done synthesizing module 'fir' (0#1) [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/fir.v:1]
+INFO: [Synth 8-6157] synthesizing module 'Window' [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/Window.v:3]
+INFO: [Synth 8-3876] $readmem data file 'window_coeffs.mem' is read successfully [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/Window.v:25]
+INFO: [Synth 8-6155] done synthesizing module 'Window' (0#1) [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/Window.v:3]
+INFO: [Synth 8-6157] synthesizing module 'axis_data_fifo_0' [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/vivado/spec.runs/synth_1/.Xil/Vivado-16576-pepe/realtime/axis_data_fifo_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'axis_data_fifo_0' (0#1) [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/vivado/spec.runs/synth_1/.Xil/Vivado-16576-pepe/realtime/axis_data_fifo_0_stub.v:6]
+WARNING: [Synth 8-689] width (16) of port connection 's_axis_tdata' does not match port width (128) of module 'axis_data_fifo_0' [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/top.v:120]
+WARNING: [Synth 8-689] width (16) of port connection 'm_axis_tdata' does not match port width (128) of module 'axis_data_fifo_0' [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/top.v:125]
+INFO: [Synth 8-6157] synthesizing module 'xfft_0' [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/vivado/spec.runs/synth_1/.Xil/Vivado-16576-pepe/realtime/xfft_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'xfft_0' (0#1) [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/vivado/spec.runs/synth_1/.Xil/Vivado-16576-pepe/realtime/xfft_0_stub.v:6]
+WARNING: [Synth 8-7071] port 'event_frame_started' of module 'xfft_0' is unconnected for instance 'fft' [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/top.v:133]
+WARNING: [Synth 8-7071] port 'event_tlast_unexpected' of module 'xfft_0' is unconnected for instance 'fft' [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/top.v:133]
+WARNING: [Synth 8-7071] port 'event_tlast_missing' of module 'xfft_0' is unconnected for instance 'fft' [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/top.v:133]
+WARNING: [Synth 8-7071] port 'event_status_channel_halt' of module 'xfft_0' is unconnected for instance 'fft' [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/top.v:133]
+WARNING: [Synth 8-7071] port 'event_data_in_channel_halt' of module 'xfft_0' is unconnected for instance 'fft' [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/top.v:133]
+WARNING: [Synth 8-7071] port 'event_data_out_channel_halt' of module 'xfft_0' is unconnected for instance 'fft' [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/top.v:133]
+WARNING: [Synth 8-7023] instance 'fft' of module 'xfft_0' has 19 connections declared, but only 13 given [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/top.v:133]
+INFO: [Synth 8-6157] synthesizing module 'ComplexToPower' [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/ComplexToPower.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'ComplexToPower' (0#1) [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/ComplexToPower.v:1]
+INFO: [Synth 8-6157] synthesizing module 'PowerToDb' [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/PowerToDb.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'PowerToDb' (0#1) [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/PowerToDb.v:1]
+INFO: [Synth 8-6157] synthesizing module 'vga_display' [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/vga_display.v:5]
+INFO: [Synth 8-6157] synthesizing module 'vga_square' [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/vga_square.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'vga_square' (0#1) [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/vga_square.v:1]
+INFO: [Synth 8-6157] synthesizing module 'vga_graph_border' [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/vga_graph_border.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'vga_graph_border' (0#1) [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/vga_graph_border.v:1]
+INFO: [Synth 8-6157] synthesizing module 'vga_FFT_in_stream' [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/vga_FFT_in_stream.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'vga_FFT_in_stream' (0#1) [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/vga_FFT_in_stream.v:1]
+INFO: [Synth 8-226] default block is never used [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/vga_display.v:216]
+INFO: [Synth 8-226] default block is never used [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/vga_display.v:224]
+INFO: [Synth 8-6155] done synthesizing module 'vga_display' (0#1) [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/vga_display.v:5]
+INFO: [Synth 8-6155] done synthesizing module 'top' (0#1) [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/top.v:1]
+WARNING: [Synth 8-7137] Register final_data_out_reg in module fir has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/fir.v:68]
+WARNING: [Synth 8-7137] Register pipe_audio_reg in module Window has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/Window.v:49]
+WARNING: [Synth 8-7137] Register result_reg in module Window has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/Window.v:56]
+WARNING: [Synth 8-7129] Port pixel_clk in module vga_FFT_in_stream is either unconnected or has no load
+WARNING: [Synth 8-7129] Port main_clk in module vga_graph_border is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pixel_clk in module vga_graph_border is either unconnected or has no load
+WARNING: [Synth 8-7129] Port reset in module vga_graph_border is either unconnected or has no load
+WARNING: [Synth 8-7129] Port btn_r in module vga_display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port reset in module PowerToDb is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axis_tdata[63] in module ComplexToPower is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axis_tdata[62] in module ComplexToPower is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axis_tdata[61] in module ComplexToPower is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axis_tdata[60] in module ComplexToPower is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axis_tdata[59] in module ComplexToPower is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axis_tdata[31] in module ComplexToPower is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axis_tdata[30] in module ComplexToPower is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axis_tdata[29] in module ComplexToPower is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axis_tdata[28] in module ComplexToPower is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axis_tdata[27] in module ComplexToPower is either unconnected or has no load
+WARNING: [Synth 8-7129] Port reset in module mic is either unconnected or has no load
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:09 ; elapsed = 00:00:10 . Memory (MB): peak = 1518.816 ; gain = 699.188
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:09 ; elapsed = 00:00:11 . Memory (MB): peak = 1518.816 ; gain = 699.188
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:09 ; elapsed = 00:00:11 . Memory (MB): peak = 1518.816 ; gain = 699.188
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.071 . Memory (MB): peak = 1518.816 ; gain = 0.000
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [c:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/vivado/spec.gen/sources_1/ip/clk_wiz_0/clk_wiz_0/clk_wiz_0_in_context.xdc] for cell 'clk0'
+Finished Parsing XDC File [c:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/vivado/spec.gen/sources_1/ip/clk_wiz_0/clk_wiz_0/clk_wiz_0_in_context.xdc] for cell 'clk0'
+Parsing XDC File [c:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/vivado/spec.gen/sources_1/ip/axis_data_fifo_0/axis_data_fifo_0/axis_data_fifo_0_in_context.xdc] for cell 'fifo1'
+Finished Parsing XDC File [c:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/vivado/spec.gen/sources_1/ip/axis_data_fifo_0/axis_data_fifo_0/axis_data_fifo_0_in_context.xdc] for cell 'fifo1'
+Parsing XDC File [c:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/vivado/spec.gen/sources_1/ip/xfft_0_1/xfft_0/xfft_0_in_context.xdc] for cell 'fft'
+Finished Parsing XDC File [c:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/vivado/spec.gen/sources_1/ip/xfft_0_1/xfft_0/xfft_0_in_context.xdc] for cell 'fft'
+Parsing XDC File [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc]
+WARNING: [Vivado 12-584] No ports matched 'sw[0]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:12]
+WARNING: [Vivado 12-584] No ports matched 'sw[1]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:13]
+WARNING: [Vivado 12-584] No ports matched 'sw[2]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:14]
+WARNING: [Vivado 12-584] No ports matched 'sw[3]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:15]
+WARNING: [Vivado 12-584] No ports matched 'sw[4]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:16]
+WARNING: [Vivado 12-584] No ports matched 'sw[5]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:17]
+WARNING: [Vivado 12-584] No ports matched 'sw[6]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:18]
+WARNING: [Vivado 12-584] No ports matched 'sw[7]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:19]
+WARNING: [Vivado 12-584] No ports matched 'sw[8]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:20]
+WARNING: [Vivado 12-584] No ports matched 'sw[9]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:21]
+WARNING: [Vivado 12-584] No ports matched 'sw[10]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:22]
+WARNING: [Vivado 12-584] No ports matched 'sw[11]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:23]
+WARNING: [Vivado 12-584] No ports matched 'sw[12]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:24]
+WARNING: [Vivado 12-584] No ports matched 'sw[13]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:25]
+WARNING: [Vivado 12-584] No ports matched 'sw[14]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:26]
+WARNING: [Vivado 12-584] No ports matched 'sw[15]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:27]
+WARNING: [Vivado 12-584] No ports matched 'LED[0]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:30]
+WARNING: [Vivado 12-584] No ports matched 'LED[1]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:31]
+WARNING: [Vivado 12-584] No ports matched 'LED[2]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:32]
+WARNING: [Vivado 12-584] No ports matched 'LED[3]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:33]
+WARNING: [Vivado 12-584] No ports matched 'LED[4]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:34]
+WARNING: [Vivado 12-584] No ports matched 'LED[5]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:35]
+WARNING: [Vivado 12-584] No ports matched 'LED[6]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:36]
+WARNING: [Vivado 12-584] No ports matched 'LED[7]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:37]
+WARNING: [Vivado 12-584] No ports matched 'seg[0]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:56]
+WARNING: [Vivado 12-584] No ports matched 'seg[1]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:57]
+WARNING: [Vivado 12-584] No ports matched 'seg[2]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:58]
+WARNING: [Vivado 12-584] No ports matched 'seg[3]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:59]
+WARNING: [Vivado 12-584] No ports matched 'seg[4]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:60]
+WARNING: [Vivado 12-584] No ports matched 'seg[5]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:61]
+WARNING: [Vivado 12-584] No ports matched 'seg[6]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:62]
+WARNING: [Vivado 12-584] No ports matched 'dp'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:63]
+WARNING: [Vivado 12-584] No ports matched 'an[0]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:64]
+WARNING: [Vivado 12-584] No ports matched 'an[1]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:65]
+WARNING: [Vivado 12-584] No ports matched 'an[2]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:66]
+WARNING: [Vivado 12-584] No ports matched 'an[3]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:67]
+WARNING: [Vivado 12-584] No ports matched 'an[4]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:68]
+WARNING: [Vivado 12-584] No ports matched 'an[5]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:69]
+WARNING: [Vivado 12-584] No ports matched 'an[6]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:70]
+WARNING: [Vivado 12-584] No ports matched 'an[7]'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:71]
+WARNING: [Vivado 12-584] No ports matched 'btn_r'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:78]
+WARNING: [Vivado 12-584] No ports matched 'RsRx'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:183]
+WARNING: [Vivado 12-584] No ports matched 'RsTx'. [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc:184]
+Finished Parsing XDC File [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc]
+WARNING: [Project 1-498] One or more constraints failed evaluation while reading constraint file [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc] and the design contains unresolved black boxes. These constraints will be read post-synthesis (as long as their source constraint file is marked as used_in_implementation) and should be applied correctly then. You should review the constraints listed in the file [.Xil/top_propImpl.xdc] and check the run log file to verify that these constraints were correctly applied.
+INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/Lab2_Nexys-A7-100T-Master.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/top_propImpl.xdc].
+Resolution: To avoid this warning, move constraints listed in [.Xil/top_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.003 . Memory (MB): peak = 1617.172 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.033 . Memory (MB): peak = 1617.172 ; gain = 0.000
+INFO: [Designutils 20-5440] No compile time benefit to using incremental synthesis; A full resynthesis will be run
+INFO: [Designutils 20-4379] Flow is switching to default flow due to incremental criteria not met. If you would like to alter this behaviour and have the flow terminate instead, please set the following parameter config_implementation {autoIncr.Synth.RejectBehavior Terminate}
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:19 ; elapsed = 00:00:22 . Memory (MB): peak = 1617.172 ; gain = 797.543
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7a100tcsg324-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:19 ; elapsed = 00:00:22 . Memory (MB): peak = 1617.172 ; gain = 797.543
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:19 ; elapsed = 00:00:22 . Memory (MB): peak = 1617.172 ; gain = 797.543
+---------------------------------------------------------------------------------
+INFO: [Synth 8-802] inferred FSM for state register 'curr_state_reg' in module 'fir'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                    IDLE |                              001 |                               00
+                    FILT |                              010 |                               01
+                    STOP |                              100 |                               10
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'curr_state_reg' using encoding 'one-hot' in module 'fir'
+WARNING: [Synth 8-327] inferring latch for variable 'next_state_reg' [C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/verilog/src/vga_FFT_in_stream.v:50]
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:25 ; elapsed = 00:00:29 . Memory (MB): peak = 1617.172 ; gain = 797.543
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input   32 Bit       Adders := 5     
+	   3 Input   32 Bit       Adders := 1     
+	   2 Input   27 Bit       Adders := 2     
+	   3 Input   25 Bit       Adders := 4     
+	   2 Input   18 Bit       Adders := 1     
+	   3 Input   13 Bit       Adders := 2     
+	   2 Input   11 Bit       Adders := 1     
+	   2 Input   10 Bit       Adders := 7     
+	   2 Input    7 Bit       Adders := 1     
+	   2 Input    6 Bit       Adders := 2     
++---Registers : 
+	               40 Bit    Registers := 2     
+	               27 Bit    Registers := 1     
+	               25 Bit    Registers := 9     
+	               24 Bit    Registers := 51    
+	               16 Bit    Registers := 2     
+	               10 Bit    Registers := 9     
+	                7 Bit    Registers := 515   
+	                6 Bit    Registers := 2     
+	                1 Bit    Registers := 12    
++---Multipliers : 
+	               4x32  Multipliers := 1     
++---Muxes : 
+	   3 Input   40 Bit        Muxes := 1     
+	   2 Input   27 Bit        Muxes := 3     
+	   3 Input   25 Bit        Muxes := 1     
+	   2 Input   18 Bit        Muxes := 1     
+	   2 Input    6 Bit        Muxes := 1     
+	   3 Input    6 Bit        Muxes := 1     
+	   2 Input    4 Bit        Muxes := 5     
+	   4 Input    4 Bit        Muxes := 3     
+	   2 Input    3 Bit        Muxes := 4     
+	   4 Input    3 Bit        Muxes := 2     
+	   2 Input    2 Bit        Muxes := 1     
+	   2 Input    1 Bit        Muxes := 521   
+	   3 Input    1 Bit        Muxes := 4     
+	   6 Input    1 Bit        Muxes := 1     
+	   4 Input    1 Bit        Muxes := 2     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 240 (col length:80)
+BRAMs: 270 (col length: RAMB18 80 RAMB36 40)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+DSP Report: Generating DSP acc0, operation Mode is: C+A*B.
+DSP Report: operator acc0 is absorbed into DSP acc0.
+DSP Report: operator acc1 is absorbed into DSP acc0.
+DSP Report: Generating DSP result0, operation Mode is: A*B.
+DSP Report: operator result0 is absorbed into DSP result0.
+WARNING: [Synth 8-3917] design top has port M_LRSEL driven by constant 0
+WARNING: [Synth 8-7129] Port pixel_clk in module vga_FFT_in_stream is either unconnected or has no load
+WARNING: [Synth 8-7129] Port btn_r in module vga_display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port reset in module PowerToDb is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axis_tdata[63] in module ComplexToPower is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axis_tdata[62] in module ComplexToPower is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axis_tdata[61] in module ComplexToPower is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axis_tdata[60] in module ComplexToPower is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axis_tdata[59] in module ComplexToPower is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axis_tdata[31] in module ComplexToPower is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axis_tdata[30] in module ComplexToPower is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axis_tdata[29] in module ComplexToPower is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axis_tdata[28] in module ComplexToPower is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axis_tdata[27] in module ComplexToPower is either unconnected or has no load
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:48 ; elapsed = 00:00:56 . Memory (MB): peak = 1665.703 ; gain = 846.074
+---------------------------------------------------------------------------------
+ Sort Area is  acc0_0 : 0 0 : 2797 2797 : Used 1 time 0
+ Sort Area is  result0_2 : 0 0 : 2678 2678 : Used 1 time 0
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+
+ROM: Preliminary Mapping Report
++------------+------------+---------------+----------------+
+|Module Name | RTL Object | Depth x Width | Implemented As | 
++------------+------------+---------------+----------------+
+|fir         | coeffs     | 64x16         | LUT            | 
+|Window      | window_rom | 1024x16       | LUT            | 
+|fir         | p_0_out    | 64x16         | LUT            | 
+|Window      | p_0_out    | 1024x16       | LUT            | 
++------------+------------+---------------+----------------+
+
+
+DSP: Preliminary Mapping Report (see note below. The ' indicates corresponding REG is set)
++------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|Module Name | DSP Mapping | A Size | B Size | C Size | D Size | P Size | AREG | BREG | CREG | DREG | ADREG | MREG | PREG | 
++------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|fir         | C+A*B       | 24     | 16     | 40     | -      | 40     | 0    | 0    | 0    | -    | -     | 0    | 0    | 
+|Window      | A*B         | 24     | 16     | -      | -      | 40     | 0    | 0    | -    | -    | -     | 0    | 0    | 
++------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+
+Note: The table above is a preliminary report that shows the DSPs inferred at the current stage of the synthesis flow. Some DSP may be reimplemented as non DSP primitives later in the synthesis flow. Multiple instantiated DSPs are reported only once.
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:57 ; elapsed = 00:01:06 . Memory (MB): peak = 1739.488 ; gain = 919.859
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:59 ; elapsed = 00:01:08 . Memory (MB): peak = 1759.863 ; gain = 940.234
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:01:02 ; elapsed = 00:01:10 . Memory (MB): peak = 1794.574 ; gain = 974.945
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:01:06 ; elapsed = 00:01:15 . Memory (MB): peak = 1988.477 ; gain = 1168.848
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:01:06 ; elapsed = 00:01:15 . Memory (MB): peak = 1988.477 ; gain = 1168.848
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:01:07 ; elapsed = 00:01:16 . Memory (MB): peak = 1988.477 ; gain = 1168.848
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:01:07 ; elapsed = 00:01:16 . Memory (MB): peak = 1988.477 ; gain = 1168.848
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:01:07 ; elapsed = 00:01:16 . Memory (MB): peak = 1988.477 ; gain = 1168.848
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:01:07 ; elapsed = 00:01:16 . Memory (MB): peak = 1988.477 ; gain = 1168.848
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+DSP Final Report (the ' indicates corresponding REG is set)
++------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|Module Name | DSP Mapping | A Size | B Size | C Size | D Size | P Size | AREG | BREG | CREG | DREG | ADREG | MREG | PREG | 
++------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|fir         | C+A*B       | 30     | 18     | 48     | -      | 40     | 0    | 0    | 0    | -    | -     | 0    | 0    | 
+|Window      | (A''*B)'    | 30     | 15     | -      | -      | 40     | 2    | 0    | -    | -    | -     | 0    | 1    | 
++------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+
+
+Report BlackBoxes: 
++------+-----------------+----------+
+|      |BlackBox name    |Instances |
++------+-----------------+----------+
+|1     |clk_wiz_0        |         1|
+|2     |axis_data_fifo_0 |         1|
+|3     |xfft_0           |         1|
++------+-----------------+----------+
+
+Report Cell Usage: 
++------+---------------+------+
+|      |Cell           |Count |
++------+---------------+------+
+|1     |axis_data_fifo |     1|
+|2     |clk_wiz        |     1|
+|3     |xfft           |     1|
+|4     |BUFG           |     4|
+|5     |CARRY4         |   175|
+|6     |DSP48E1        |     2|
+|8     |LUT1           |   113|
+|9     |LUT2           |   830|
+|10    |LUT3           |   186|
+|11    |LUT4           |   104|
+|12    |LUT5           |   223|
+|13    |LUT6           |  1829|
+|14    |MUXF7          |   564|
+|15    |MUXF8          |   248|
+|16    |FDCE           |  1631|
+|17    |FDPE           |     1|
+|18    |FDRE           |  3755|
+|19    |FDSE           |     7|
+|20    |LDC            |     2|
+|21    |LDP            |     1|
+|22    |IBUF           |     3|
+|23    |OBUF           |    16|
++------+---------------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:01:07 ; elapsed = 00:01:16 . Memory (MB): peak = 1988.477 ; gain = 1168.848
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 16 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:55 ; elapsed = 00:01:13 . Memory (MB): peak = 1988.477 ; gain = 1070.492
+Synthesis Optimization Complete : Time (s): cpu = 00:01:07 ; elapsed = 00:01:16 . Memory (MB): peak = 1988.477 ; gain = 1168.848
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.075 . Memory (MB): peak = 1993.656 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 992 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.002 . Memory (MB): peak = 2001.332 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 3 instances were transformed.
+  LDC => LDCE: 2 instances
+  LDP => LDPE: 1 instance 
+
+Synth Design complete | Checksum: 7a877d41
+INFO: [Common 17-83] Releasing license: Synthesis
+57 Infos, 91 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:01:13 ; elapsed = 00:01:24 . Memory (MB): peak = 2001.332 ; gain = 1386.340
+Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.013 . Memory (MB): peak = 2001.332 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'C:/Users/bobph/OneDrive/Desktop/Projects/0001 - Hardware Audio Spectrum Analyzer/local_debug/vivado/spec.runs/synth_1/top.dcp' has been generated.
+INFO: [Vivado 12-24828] Executing command : report_utilization -file top_utilization_synth.rpt -pb top_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Tue May  5 22:56:26 2026...
