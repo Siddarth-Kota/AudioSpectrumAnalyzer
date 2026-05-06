@@ -176,10 +176,15 @@ module vga_display(sys_clk, reset, btn_r, valid, db, Hsync, Vsync, vgaRed, vgaGr
     //         valid_temp <= 0;
     //         db_temp <= 0;
     //     end
+    //     else if(valid_temp == 0)
+    //     begin
+    //         valid_temp <= 1;
+    //         db_temp <= 110;
+    //     end
     //     else
     //     begin
     //         valid_temp <= 1;
-    //         if(db_temp == 107)
+    //         if(db_temp >= 50)
     //             db_temp <= 0;
     //         else
     //             db_temp <= db_temp+1;

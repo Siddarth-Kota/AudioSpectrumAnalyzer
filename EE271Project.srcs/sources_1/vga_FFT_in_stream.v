@@ -45,7 +45,8 @@ module vga_FFT_in_stream(main_clk, pixel_clk, reset, valid, db, h_count, v_count
     begin
         if(state == s0_waiting)
         begin
-            if(valid && (index == (n_pt_fft-1)))
+            //if(valid && (index == (n_pt_fft-1)))
+            if(valid)
             begin
                 next_state = s1_intaking;
             end
@@ -79,6 +80,7 @@ module vga_FFT_in_stream(main_clk, pixel_clk, reset, valid, db, h_count, v_count
 
         else if(state == s4_displaying)
         begin
+            //if((h_count == 0) && (v_count == 0) && (sec1_display_counter == 25000001))
             if((h_count == 0) && (v_count == 0))
                 next_state = s0_waiting;
             else
@@ -89,11 +91,13 @@ module vga_FFT_in_stream(main_clk, pixel_clk, reset, valid, db, h_count, v_count
     // track bin intake progress
     // assumption is that once valid goes high it stays high
     integer i;
+    reg [6:0] temp_db;
     always@(posedge main_clk)
     begin
         if(reset)
         begin
             index <= 0;
+            temp_db <= 0;
             for(i = 0; i <= usable_fft; i = i + 1)
             begin
                 bin[i] <= 0;
@@ -101,16 +105,17 @@ module vga_FFT_in_stream(main_clk, pixel_clk, reset, valid, db, h_count, v_count
         end
         else 
         begin
-            if(valid)
+            if(valid && (state == s1_intaking))
             begin
+                bin[0] <= temp_db;
+                bin[index] <= db;            
                 index <= index + 1;
-                if(state == s1_intaking)
-                begin
-                    bin[index] <= db;
-                end
             end
             else
-                index <= 0;
+            begin
+                temp_db <= db;
+                index <= 1;
+            end
         end
     end
 
