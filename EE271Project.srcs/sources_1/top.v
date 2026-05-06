@@ -148,6 +148,7 @@ module top(
     // LINE OF COMPLETION
     wire [26:0] c2p_mdata;
     wire c2p_mvalid, p2d_sready;
+    assign p2d_sready = 1;              // REMOVE WHEN P2D IS IN
     ComplexToPower c2p(
         .s_axis_tdata(fft_mdata),
         .s_axis_tvalid(fft_mvalid),
