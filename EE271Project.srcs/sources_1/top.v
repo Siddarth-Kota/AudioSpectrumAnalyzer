@@ -6,6 +6,7 @@ module top(
     input wire M_DATA,      // input from ADMP
     output wire M_LRSEL,
 
+    input wire [15:0] sw,
     output wire [3:0] vgaRed,
     output wire [3:0] vgaGreen,
     output wire [3:0] vgaBlue,
@@ -178,6 +179,7 @@ module top(
         .btn_r(),
         .valid(p2d_mvalid),
         .db(db),
+        .sw(sw),
         .Hsync(Hsync),
         .Vsync(Vsync),
         .vgaRed(vgaRed),

@@ -2,12 +2,13 @@
 `include "vga_graph_border.v"
 `include "vga_FFT_in_stream.v"
 
-module vga_display(sys_clk, reset, btn_r, valid, db, Hsync, Vsync, vgaRed, vgaGreen, vgaBlue);
+module vga_display(sys_clk, reset, btn_r, valid, db, sw, Hsync, Vsync, vgaRed, vgaGreen, vgaBlue);
     input wire sys_clk;
     input wire reset;
     input wire btn_r;
     input wire valid;
     input wire [6:0] db;
+    input wire [15:0] sw;
     output wire Hsync;
     output wire Vsync;
     output wire [3:0] vgaRed;
@@ -203,6 +204,7 @@ module vga_display(sys_clk, reset, btn_r, valid, db, Hsync, Vsync, vgaRed, vgaGr
                                     .db(db),
                                     .h_count(h_count),
                                     .v_count(v_count),
+                                    .sw(sw),
                                     .display_red(FFT_red),
                                     .display_green(FFT_green),
                                     .display_blue(FFT_blue),

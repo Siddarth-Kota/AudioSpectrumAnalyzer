@@ -1,4 +1,4 @@
-module vga_FFT_in_stream(main_clk, pixel_clk, reset, valid, db, h_count, v_count, display_red, display_green, display_blue, display_flag);
+module vga_FFT_in_stream(main_clk, pixel_clk, reset, valid, db, h_count, v_count, sw, display_red, display_green, display_blue, display_flag);
     input wire main_clk;
     input wire pixel_clk;
     input wire reset;
@@ -6,6 +6,7 @@ module vga_FFT_in_stream(main_clk, pixel_clk, reset, valid, db, h_count, v_count
     input wire [6:0] db;
     input wire [11:0] h_count;
     input wire [11:0] v_count;
+    input wire [15:0] sw;
 
     output wire [3:0] display_red;
     output wire [3:0] display_green;
@@ -72,7 +73,7 @@ module vga_FFT_in_stream(main_clk, pixel_clk, reset, valid, db, h_count, v_count
 
         else if(state == s3_displaying)
         begin
-            if((h_count != 0) && (v_count != 0))
+            if(sec1_display_counter == 0)
                 next_state = s4_displaying;
             else
                 next_state = s3_displaying;
@@ -81,10 +82,26 @@ module vga_FFT_in_stream(main_clk, pixel_clk, reset, valid, db, h_count, v_count
         else if(state == s4_displaying)
         begin
             //if((h_count == 0) && (v_count == 0) && (sec1_display_counter == 25000001))
-            if((h_count == 0) && (v_count == 0))
+            if(sec1_display_counter == screen_refresh_time)
                 next_state = s0_waiting;
             else
                 next_state = s4_displaying;
+        end
+    end
+
+    // up to 1 second counter assumming 25MHz clock
+    reg [24:0] sec1_display_counter;
+    localparam second = 25000000,
+               screen_refresh_time = second/16;
+    always@(posedge pixel_clk)
+    begin
+        if(reset)
+            sec1_display_counter <= 0;
+        else
+        begin
+            sec1_display_counter <= sec1_display_counter + 1;
+            if(sec1_display_counter == screen_refresh_time)
+                sec1_display_counter <= 0;
         end
     end
 
@@ -155,12 +172,18 @@ module vga_FFT_in_stream(main_clk, pixel_clk, reset, valid, db, h_count, v_count
         if(graph_check)
         begin
             current_bin = h_count - (x_axis_h_origin + y_axis_width + 1);
-            if(v_count >= (410 - ((bin[current_bin] << 1) + bin[current_bin])))
+            // calculate color for data point
+            //color_red = (15*(max_v_count_graph - v_count))/(max_v_count_graph - min_v_count_graph); // top color
+            color_green = (15*(v_count - min_v_count_graph))/(max_v_count_graph - min_v_count_graph); // bot color
+            if(sw[0])
             begin
-                data_check = 1;
-                // calculate color for data point
-                //color_red = (15*(max_v_count_graph - v_count))/(max_v_count_graph - min_v_count_graph); // top color
-                color_green = (15*(v_count - min_v_count_graph))/(max_v_count_graph - min_v_count_graph); // bot color
+                if(v_count >= (410 - ((bin[current_bin] << 1) + bin[current_bin])))         // vertical dB scale 0-120dB
+                    data_check = 1;
+            end
+            else
+            begin
+                if(v_count >= (410 - ((bin[current_bin] << 2) + (bin[current_bin] << 1)))) // veritical dB scale 0-60dB
+                    data_check = 1;
             end
         end
     end
