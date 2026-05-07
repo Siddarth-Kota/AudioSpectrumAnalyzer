@@ -1,145 +1,278 @@
-
 `timescale 1ns / 1ps
 
 module buffer_final #(
-    parameter N     = 1024,
-    parameter WIDTH = 16
+    parameter DEPTH         = 2048,
+    parameter ADDR          = 11,
+    parameter FRAME_SIZE    = 1024,
+    parameter FRAME_BITS    = 10,
+    parameter GENERATE_LAST = 1
 )(
-    input  wire                  clk,
-    input  wire                  rst_n,
+    // ============================================================
+    // Write side clock domain, from Window
+    // ============================================================
+    input  wire        wr_clk,
+    input  wire        wr_rst_n,
 
-    // AXI-Stream Slave (from Window)
-    input  wire signed [WIDTH-1:0] s_data,
-    input  wire                    s_valid,
-    output wire                    s_ready,
+    // AXI-style Slave Interface, from Window or upstream block
+    input  wire [31:0] s_data,    // lower 16 bits used
+    input  wire        s_valid,
+    output wire        s_ready,
+    input  wire        s_last,
 
-    // AXI-Stream Master (to FFT)
-    output reg  signed [WIDTH-1:0] m_data,
-    output reg                     m_valid,
-    input  wire                    m_ready
+    // ============================================================
+    // Read side clock domain, to FFT
+    // ============================================================
+    input  wire        rd_clk,
+    input  wire        rd_rst_n,
+
+    // AXI-style Master Interface, to FFT
+    output reg  [31:0] m_data,
+    output reg         m_valid,
+    output reg         m_last,
+    input  wire        m_ready
 );
 
-    // =========================
-    // DOUBLE BUFFER MEMORY
-    // =========================
-    reg signed [WIDTH-1:0] mem0 [0:N-1];
-    reg signed [WIDTH-1:0] mem1 [0:N-1];
+    // ============================================================
+    // FIFO memory
+    //
+    // Each FIFO word stores:
+    //   bit 32    : last flag
+    //   bits 31:0 : data going to FFT
+    //
+    // Lead requested:
+    //   input s_data is 32 bits
+    //   only lower 16 bits are processed
+    //
+    // This buffer outputs:
+    //   m_data = {16'b0, s_data[15:0]}
+    // ============================================================
+    reg [32:0] mem [0:DEPTH-1];
+    reg [32:0] rd_data_reg;
 
-    // =========================
-    // POINTERS & STATE
-    // =========================
-    reg [9:0] write_ptr;
-    reg [9:0] read_ptr;
+    // ============================================================
+    // Binary to Gray conversion
+    // ============================================================
+    function [ADDR:0] bin_to_gray;
+        input [ADDR:0] bin;
+        begin
+            bin_to_gray = (bin >> 1) ^ bin;
+        end
+    endfunction
 
-    reg write_sel;   // which buffer is being written: 0=mem0, 1=mem1
-    reg read_sel;    // which buffer is being read:    0=mem0, 1=mem1
+    // ============================================================
+    // Write pointer
+    // ============================================================
+    reg [ADDR:0] wr_bin;
+    reg [ADDR:0] wr_gray;
 
-    // Full flags - only set by write logic, only cleared by read logic
-    // To avoid multi-driver, we use a single always block below
-    reg buf_full [0:1];   // buf_full[0] = mem0 full, buf_full[1] = mem1 full
+    wire [ADDR:0] wr_bin_plus1;
+    wire [ADDR:0] wr_gray_plus1;
 
-    reg reading;  // read side is actively streaming to FFT
+    assign wr_bin_plus1  = wr_bin + 1'b1;
+    assign wr_gray_plus1 = bin_to_gray(wr_bin_plus1);
 
-    // =========================
-    // READY / BACKPRESSURE
-    // =========================
-    // s_ready: safe to accept from Window as long as the buffer we'd
-    // write into isn't full (i.e. not both buffers occupied)
-    // If both are full, stall the Window block
-    assign s_ready = !(buf_full[0] && buf_full[1]);
+    // ============================================================
+    // Read pointer
+    // ============================================================
+    reg [ADDR:0] rd_bin;
+    reg [ADDR:0] rd_gray;
 
-    // =========================
-    // WRITE LOGIC
-    // =========================
-    always @(posedge clk) begin
-        if (!rst_n) begin
-            write_ptr  <= 0;
-            write_sel  <= 0;
+    wire [ADDR:0] rd_bin_plus1;
+    wire [ADDR:0] rd_gray_plus1;
+
+    assign rd_bin_plus1  = rd_bin + 1'b1;
+    assign rd_gray_plus1 = bin_to_gray(rd_bin_plus1);
+
+    // ============================================================
+    // Pointer synchronizers
+    // ============================================================
+    reg [ADDR:0] wr_gray_sync1_rd;
+    reg [ADDR:0] wr_gray_sync2_rd;
+
+    reg [ADDR:0] rd_gray_sync1_wr;
+    reg [ADDR:0] rd_gray_sync2_wr;
+
+    always @(posedge rd_clk or negedge rd_rst_n) begin
+        if (!rd_rst_n) begin
+            wr_gray_sync1_rd <= 0;
+            wr_gray_sync2_rd <= 0;
         end else begin
-            if (s_valid && s_ready) begin  // AXI handshake on input
-
-                if (write_sel == 0)
-                    mem0[write_ptr] <= s_data;
-                else
-                    mem1[write_ptr] <= s_data;
-
-                if (write_ptr == N-1) begin
-                    write_ptr <= 0;
-                    write_sel <= ~write_sel; // ping-pong to other buffer
-                end else begin
-                    write_ptr <= write_ptr + 1;
-                end
-            end
+            wr_gray_sync1_rd <= wr_gray;
+            wr_gray_sync2_rd <= wr_gray_sync1_rd;
         end
     end
 
-    // =========================
-    // FULL FLAG LOGIC
-    // =========================
-    // Consolidated into one always block to avoid multi-driver conflict
-    always @(posedge clk) begin
-        if (!rst_n) begin
-            buf_full[0] <= 0;
-            buf_full[1] <= 0;
+    always @(posedge wr_clk or negedge wr_rst_n) begin
+        if (!wr_rst_n) begin
+            rd_gray_sync1_wr <= 0;
+            rd_gray_sync2_wr <= 0;
         end else begin
-            // SET: when write finishes filling a buffer
-            if (s_valid && s_ready && write_ptr == N-1) begin
-                buf_full[write_sel] <= 1;
-            end
-
-            // CLEAR: when read side finishes draining a buffer
-            // read_ptr hits N-1 and FFT accepts the last sample
-            if (reading && m_ready && read_ptr == N-1) begin
-                buf_full[read_sel] <= 0;
-            end
+            rd_gray_sync1_wr <= rd_gray;
+            rd_gray_sync2_wr <= rd_gray_sync1_wr;
         end
     end
 
-    // =========================
-    // READ / OUTPUT LOGIC
-    // =========================
-    always @(posedge clk) begin
-        if (!rst_n) begin
-            reading   <= 0;
-            read_ptr  <= 0;
-            read_sel  <= 0;
-            m_valid   <= 0;
-            m_data    <= 0;
+    // ============================================================
+    // Full logic, write clock domain
+    // ============================================================
+    reg fifo_full_reg;
+
+    assign s_ready = !fifo_full_reg;
+
+    wire input_fire;
+    assign input_fire = s_valid && s_ready;
+
+    wire [ADDR:0] wr_bin_after_write;
+    wire [ADDR:0] wr_gray_after_write;
+
+    assign wr_bin_after_write  = wr_bin + input_fire;
+    assign wr_gray_after_write = bin_to_gray(wr_bin_after_write);
+
+    wire fifo_full_next;
+
+    assign fifo_full_next =
+        (wr_gray_after_write == {
+            ~rd_gray_sync2_wr[ADDR:ADDR-1],
+             rd_gray_sync2_wr[ADDR-2:0]
+        });
+
+    // ============================================================
+    // Frame-last generation
+    //
+    // The Window block does not output last.
+    // Therefore, this buffer can generate last every FRAME_SIZE
+    // accepted samples.
+    //
+    // If upstream eventually provides real s_last, this buffer also
+    // passes that through.
+    // ============================================================
+    reg [FRAME_BITS-1:0] frame_count;
+
+    wire generated_last;
+    assign generated_last = (frame_count == FRAME_SIZE - 1);
+
+    wire last_to_store;
+    assign last_to_store = s_last | (GENERATE_LAST ? generated_last : 1'b0);
+
+    // ============================================================
+    // Input data formatting
+    //
+    // Only s_data[15:0] is used.
+    // Upper 16 bits are zero padding.
+    // ============================================================
+    wire [31:0] fifo_data_in;
+    assign fifo_data_in = {16'b0, s_data[15:0]};
+
+    // ============================================================
+    // Write logic
+    // ============================================================
+    always @(posedge wr_clk or negedge wr_rst_n) begin
+        if (!wr_rst_n) begin
+            wr_bin        <= 0;
+            wr_gray       <= 0;
+            fifo_full_reg <= 0;
+            frame_count   <= 0;
         end else begin
+            if (input_fire) begin
+                mem[wr_bin[ADDR-1:0]] <= {last_to_store, fifo_data_in};
 
-            if (!reading) begin
-                m_valid <= 0;
-                // Start reading whichever buffer is full
-                // Priority to buf 0; buf 1 if only that is full
-                if (buf_full[0]) begin
-                    reading  <= 1;
-                    read_sel <= 0;
-                    read_ptr <= 0;
-                end else if (buf_full[1]) begin
-                    reading  <= 1;
-                    read_sel <= 1;
-                    read_ptr <= 0;
-                end
-            end else begin
-                // Drive output - data is presented every cycle,
-                // but pointer only advances when FFT accepts (m_ready)
-                m_valid <= 1;
+                wr_bin  <= wr_bin_plus1;
+                wr_gray <= wr_gray_plus1;
 
-                if (read_sel == 0)
-                    m_data <= mem0[read_ptr];
+                if (last_to_store)
+                    frame_count <= 0;
                 else
-                    m_data <= mem1[read_ptr];
+                    frame_count <= frame_count + 1'b1;
+            end
 
-                if (m_ready) begin  // FFT is accepting this sample
-                    if (read_ptr == N-1) begin
-                        // Last sample just accepted - done reading
-                        reading <= 0;
-                        m_valid <= 0;
-                    end else begin
-                        read_ptr <= read_ptr + 1;
+            fifo_full_reg <= fifo_full_next;
+        end
+    end
+
+    // ============================================================
+    // Empty logic, read clock domain
+    // ============================================================
+    wire fifo_empty;
+    assign fifo_empty = (rd_gray == wr_gray_sync2_rd);
+
+    // ============================================================
+    // Registered read from memory
+    // ============================================================
+    always @(posedge rd_clk or negedge rd_rst_n) begin
+        if (!rd_rst_n)
+            rd_data_reg <= 33'd0;
+        else
+            rd_data_reg <= mem[rd_bin[ADDR-1:0]];
+    end
+
+    wire        rd_last_bit;
+    wire [31:0] rd_sample_data;
+
+    assign rd_last_bit    = rd_data_reg[32];
+    assign rd_sample_data = rd_data_reg[31:0];
+
+    // ============================================================
+    // Read FSM
+    // ============================================================
+    localparam RD_IDLE    = 2'd0;
+    localparam RD_PENDING = 2'd1;
+    localparam RD_ACTIVE  = 2'd2;
+
+    reg [1:0] rd_state;
+
+    always @(posedge rd_clk or negedge rd_rst_n) begin
+        if (!rd_rst_n) begin
+            rd_bin   <= 0;
+            rd_gray  <= 0;
+            rd_state <= RD_IDLE;
+
+            m_data   <= 32'd0;
+            m_valid  <= 1'b0;
+            m_last   <= 1'b0;
+        end else begin
+            case (rd_state)
+
+                RD_IDLE: begin
+                    m_valid <= 1'b0;
+                    m_last  <= 1'b0;
+
+                    if (!fifo_empty) begin
+                        rd_bin   <= rd_bin_plus1;
+                        rd_gray  <= rd_gray_plus1;
+                        rd_state <= RD_PENDING;
                     end
                 end
-            end
+
+                RD_PENDING: begin
+                    m_data   <= rd_sample_data;
+                    m_last   <= rd_last_bit;
+                    m_valid  <= 1'b1;
+                    rd_state <= RD_ACTIVE;
+                end
+
+                RD_ACTIVE: begin
+                    if (m_ready) begin
+                        if (!fifo_empty) begin
+                            rd_bin   <= rd_bin_plus1;
+                            rd_gray  <= rd_gray_plus1;
+
+                            m_valid  <= 1'b0;
+                            rd_state <= RD_PENDING;
+                        end else begin
+                            m_valid  <= 1'b0;
+                            m_last   <= 1'b0;
+                            rd_state <= RD_IDLE;
+                        end
+                    end
+                end
+
+                default: begin
+                    rd_state <= RD_IDLE;
+                    m_valid  <= 1'b0;
+                    m_last   <= 1'b0;
+                end
+
+            endcase
         end
     end
 
