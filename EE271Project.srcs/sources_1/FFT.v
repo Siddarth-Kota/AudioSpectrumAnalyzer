@@ -5,19 +5,15 @@ module fft1024 #(
     parameter LOGN = 10
 )(
     input  wire        clk,
-    input  wire        rst_n,     // active-low reset
+    input  wire        rst,
 
-    // ============================================================
-    // AXI-style Slave Interface, from Buffer
-    // ============================================================
-    input  wire [31:0] s_data,    // lower 16 bits used
+    // AXI-Stream Slave Interface - from Buffer
+    input  wire [31:0] s_data,
     input  wire        s_valid,
     output reg         s_ready,
     input  wire        s_last,
 
-    // ============================================================
-    // AXI-style Master Interface, to ComplexToPower
-    // ============================================================
+    // AXI-Stream Master Interface - to ComplexToPower
     output reg  [63:0] m_data,
     output reg         m_valid,
     input  wire        m_ready,
@@ -31,9 +27,7 @@ module fft1024 #(
     reg signed [15:0] xi [0:N-1];
 
     // ============================================================
-    // Twiddle ROM
-    //
-    // For a 1024-point FFT, each file needs 512 signed Q15 entries.
+    // Twiddle ROM - 512 signed Q15 entries each
     // ============================================================
     reg signed [15:0] wr [0:N/2-1];
     reg signed [15:0] wi [0:N/2-1];
@@ -67,9 +61,8 @@ module fft1024 #(
         integer b;
         begin
             bit_rev = 10'd0;
-            for (b = 0; b < LOGN; b = b + 1) begin
+            for (b = 0; b < LOGN; b = b + 1)
                 bit_rev[b] = in[LOGN-1-b];
-            end
         end
     endfunction
 
@@ -98,7 +91,6 @@ module fft1024 #(
 
     assign i1_w = k_base + j_idx;
     assign i2_w = i1_w + half_span;
-
     assign tw_w = j_idx << tw_shift;
 
     // ============================================================
@@ -114,12 +106,7 @@ module fft1024 #(
     reg [9:0] p_i2;
 
     // ============================================================
-    // Complex multiply:
-    //
-    // t = x[i2] * W
-    //
-    // t_real = xr[i2] * wr - xi[i2] * wi
-    // t_imag = xr[i2] * wi + xi[i2] * wr
+    // Complex multiply: t = x[i2] * W
     // ============================================================
     wire signed [31:0] mult_xr_wr;
     wire signed [31:0] mult_xi_wi;
@@ -140,7 +127,7 @@ module fft1024 #(
     assign twiddle_imag_calc = {mult_xr_wi[31], mult_xr_wi}
                              + {mult_xi_wr[31], mult_xi_wr};
 
-    // Q30 back to Q15
+    // Q30 to Q15 conversion
     wire signed [32:0] tr_shifted;
     wire signed [32:0] ti_shifted;
 
@@ -154,10 +141,7 @@ module fft1024 #(
     assign ti_q15 = ti_shifted[15:0];
 
     // ============================================================
-    // Butterfly add/subtract
-    //
-    // This FFT divides by 2 at every stage to prevent overflow.
-    // Final result is scaled by 1/1024.
+    // Butterfly add/subtract with divide-by-2 scaling
     // ============================================================
     wire signed [16:0] sum_r;
     wire signed [16:0] sum_i;
@@ -166,32 +150,24 @@ module fft1024 #(
 
     assign sum_r  = {p_ur[15], p_ur} + {tr_q15[15], tr_q15};
     assign sum_i  = {p_ui[15], p_ui} + {ti_q15[15], ti_q15};
-
     assign diff_r = {p_ur[15], p_ur} - {tr_q15[15], tr_q15};
     assign diff_i = {p_ui[15], p_ui} - {ti_q15[15], ti_q15};
 
     // ============================================================
-    // Output packing for unchanged ComplexToPower block
+    // Output packing for ComplexToPower
     //
-    // ComplexToPower expects:
-    //   real = s_axis_tdata[26:0]
-    //   imag = s_axis_tdata[58:32]
-    //
-    // Therefore:
-    //   m_data[26:0]  = real, sign-extended to 27 bits
-    //   m_data[31:27] = unused zero padding
-    //   m_data[58:32] = imag, sign-extended to 27 bits
-    //   m_data[63:59] = unused zero padding
+    // m_data[26:0]  = real sign-extended to 27 bits
+    // m_data[31:27] = zero padding
+    // m_data[58:32] = imag sign-extended to 27 bits
+    // m_data[63:59] = zero padding
     // ============================================================
     function [63:0] pack_complex;
         input signed [15:0] real_in;
         input signed [15:0] imag_in;
         begin
             pack_complex = {
-                5'b0,
-                {{11{imag_in[15]}}, imag_in},
-                5'b0,
-                {{11{real_in[15]}}, real_in}
+                5'b0, {{11{imag_in[15]}}, imag_in},
+                5'b0, {{11{real_in[15]}}, real_in}
             };
         end
     endfunction
@@ -202,8 +178,8 @@ module fft1024 #(
     // ============================================================
     // Main FSM
     // ============================================================
-    always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin
+    always @(posedge clk or posedge rst) begin
+        if (rst) begin
             state         <= LOAD;
 
             load_count    <= 10'd0;
@@ -230,7 +206,7 @@ module fft1024 #(
                 // ====================================================
                 // LOAD
                 // Accepts 1024 samples from the buffer.
-                // Data is accepted only when s_valid && s_ready.
+                // Stores samples in bit-reversed order for DIT FFT.
                 // ====================================================
                 LOAD: begin
                     s_ready <= 1'b1;
@@ -238,17 +214,6 @@ module fft1024 #(
                     m_last  <= 1'b0;
 
                     if (s_valid && s_ready) begin
-                        `ifndef SYNTHESIS
-                        if ((load_count == N-1) && !s_last) begin
-                            $display("WARNING: FFT expected s_last on final input sample at time %0t", $time);
-                        end
-
-                        if ((load_count != N-1) && s_last) begin
-                            $display("WARNING: FFT received early s_last at sample %0d, time %0t",
-                                     load_count, $time);
-                        end
-                        `endif
-
                         xr[bit_rev(load_count)] <= $signed(s_data[15:0]);
                         xi[bit_rev(load_count)] <= 16'sd0;
 
@@ -257,7 +222,6 @@ module fft1024 #(
                             stage         <= 4'd0;
                             index         <= 10'd0;
                             compute_phase <= 1'b0;
-
                             s_ready       <= 1'b0;
                             state         <= COMPUTE;
                         end else begin
@@ -269,7 +233,8 @@ module fft1024 #(
                 // ====================================================
                 // COMPUTE
                 // Two cycles per butterfly.
-                // The FFT does not accept input while computing.
+                // Phase 0: latch operands and twiddle product.
+                // Phase 1: write butterfly result back.
                 // ====================================================
                 COMPUTE: begin
                     s_ready <= 1'b0;
@@ -279,10 +244,8 @@ module fft1024 #(
                     if (compute_phase == 1'b0) begin
                         p_i1 <= i1_w;
                         p_i2 <= i2_w;
-
                         p_ur <= xr[i1_w];
                         p_ui <= xi[i1_w];
-
                         p_tr <= twiddle_real_calc;
                         p_ti <= twiddle_imag_calc;
 
@@ -290,7 +253,6 @@ module fft1024 #(
                     end else begin
                         xr[p_i1] <= sum_r[16:1];
                         xi[p_i1] <= sum_i[16:1];
-
                         xr[p_i2] <= diff_r[16:1];
                         xi[p_i2] <= diff_i[16:1];
 
@@ -314,9 +276,7 @@ module fft1024 #(
                 // ====================================================
                 // OUTPUT
                 // Sends 1024 FFT bins to ComplexToPower.
-                // Data is transferred only when m_valid && m_ready.
-                // Holds m_data, m_valid, and m_last steady under
-                // downstream backpressure.
+                // Holds m_data/m_valid/m_last steady under backpressure.
                 // ====================================================
                 OUTPUT: begin
                     s_ready <= 1'b0;
@@ -331,7 +291,6 @@ module fft1024 #(
                             m_last    <= 1'b0;
                             m_data    <= 64'd0;
                             out_count <= 10'd0;
-
                             s_ready   <= 1'b1;
                             state     <= LOAD;
                         end else begin
@@ -345,15 +304,12 @@ module fft1024 #(
 
                 default: begin
                     state         <= LOAD;
-
                     load_count    <= 10'd0;
                     out_count     <= 10'd0;
                     stage         <= 4'd0;
                     index         <= 10'd0;
                     compute_phase <= 1'b0;
-
                     s_ready       <= 1'b1;
-
                     m_data        <= 64'd0;
                     m_valid       <= 1'b0;
                     m_last        <= 1'b0;
